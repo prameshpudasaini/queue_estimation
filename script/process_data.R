@@ -16,20 +16,33 @@ db_phase <- "[Maxview_Data_2017].[dbo].[ASC_PhasePed_Events_06-25-2018]"
 db_det <- "[Maxview_Data_2017].[dbo].[ASC_Det_Events_06-25-2018]"
 
 st_major <- "Speedway"
-st_minor <- "Campbell"
 
-# Speedway & Campbell: Monday, 2018-06-25, 7 am to 8 am
+# # Speedway & Campbell: Monday, 2018-06-25, 7 am to 8 am
+# st_minor = "Campbell"
+# query_phase <- paste0(
+#     "SELECT * FROM ", db_phase,
+#     " WHERE TimeStamp > '2018-06-25 06:58:00' AND TimeStamp < '2018-06-25 08:03:00' AND Parameter = 2 AND EventId IN (1, 7, 8, 9, 10, 11) AND",
+#     " DeviceId IN (SELECT ID FROM ", db_device,
+#     " WHERE Name LIKE '%", st_major, "%' AND Name LIKE '%", st_minor, "%')"
+# )
+# query_det <- paste0(
+#     "SELECT * FROM ", db_det,
+#     " WHERE TimeStamp > '2018-06-25 06:58:00' AND TimeStamp < '2018-06-25 08:03:00' AND Parameter = 2 AND EventId IN (81, 82) AND",
+#     " DeviceId IN (SELECT ID FROM ", db_device,
+#     " WHERE Name LIKE '%", st_major, "%' AND Name LIKE '%", st_minor, "%')"
+# )
+
 # Speedway & Mountain: Thursday, 2018-06-28, 4 pm to 5 pm
-
+st_minor = "Mountain"
 query_phase <- paste0(
-    "SELECT * FROM ", db_phase,
-    " WHERE TimeStamp > '2018-06-25 06:58:00' AND TimeStamp < '2018-06-25 08:03:00' AND Parameter = 2 AND EventId IN (1, 7, 8, 9, 10, 11) AND",
+    "SELECT * FROM ", db_phase, 
+    " WHERE TimeStamp > '2018-06-28 15:55:00' AND TimeStamp < '2018-06-28 17:03:00' AND Parameter = 6 AND EventId IN (1, 7, 8, 9, 10, 11) AND", 
     " DeviceId IN (SELECT ID FROM ", db_device,
     " WHERE Name LIKE '%", st_major, "%' AND Name LIKE '%", st_minor, "%')"
 )
 query_det <- paste0(
-    "SELECT * FROM ", db_det,
-    " WHERE TimeStamp > '2018-06-25 06:58:00' AND TimeStamp < '2018-06-25 08:03:00' AND Parameter = 2 AND EventId IN (81, 82) AND",
+    "SELECT * FROM ", db_det, 
+    " WHERE TimeStamp > '2018-06-28 15:55:00' AND TimeStamp < '2018-06-28 17:05:00' AND Parameter = 6 AND EventId IN (81, 82) AND", 
     " DeviceId IN (SELECT ID FROM ", db_device,
     " WHERE Name LIKE '%", st_major, "%' AND Name LIKE '%", st_minor, "%')"
 )
@@ -104,7 +117,7 @@ DT <- DT[, setnafill(.SD, type = "locf", cols = c("Cycle", "CL", "GreenStart", "
 DT[, YellowStart := as.POSIXct(YellowStart, origin = "1970-01-01")]
 DT[, RedStart := as.POSIXct(RedStart, origin = "1970-01-01")]
 DT[, GreenStart := as.POSIXct(GreenStart, origin = "1970-01-01")]
-DT[, AIC := as.numeric(TimeStamp - YellowStart)]
+DT[, AIC := round(as.numeric(TimeStamp - YellowStart), 3L)]
 DT[, TUG := round(as.numeric(GreenStart - TimeStamp), 3L)]
 
 SSC82 <- as.character(DT$Signal[DT$EventId == 82L])
@@ -130,3 +143,6 @@ signal_color <- c("red", "black", "forestgreen")
 
 plot_ly(DT, type = "scatter", x = ~ODT, y = ~Gap, color = ~SSC,
         mode = "markers", colors = signal_color, marker = list(size = 5))
+
+# fwrite(DT, "ignore/20180625_0708_Campbell.txt")
+# fwrite(DT, "ignore/20180628_1617_Mountain.txt")
