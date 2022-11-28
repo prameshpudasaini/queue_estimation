@@ -97,26 +97,3 @@ qDT_Mo <- data.table(
 
 round(mean(abs(qDT_Mo$Queue_Obs - qDT_Mo$Queue_Cal) * 25), 2L)
 round(mean(abs(qDT_Mo$Queue_Obs - qDT_Mo$Queue_Cal) / qDT_Mo$Queue_Obs) * 100, 2L)
-
-qDT_Mo <- melt(qDT_Mo, id.vars = "Cycle", measure.vars = c("Queue_Obs", "Queue_Cal"))
-
-ggplot(qDT_Mo) + 
-    geom_point(aes(Cycle, Queue_Obs), color = "blue", )
-
-ggplot(queue_mountain) + 
-    stat_identity(aes(Cycle, value, fill = variable), color = "black", geom = "bar", position = "dodge") 
-labs(title = "(c) Speedway Blvd & Mountain Ave",
-     x = "On-detector time (sec)",
-     y = "Time gap (sec)",
-     color = "Actuation signal status change") + 
-    theme(panel.border = element_rect(fill = NA),
-          plot.title = element_text(size = 14, face = "bold"),
-          axis.title = element_text(size = 14),
-          axis.text = element_text(size = 14),
-          legend.title = element_text(size = 14),
-          legend.text = element_text(size = 14),
-          legend.direction = "horizontal",
-          legend.key.width = unit(1, "cm"),
-          legend.key.size = unit(2, "cm"),
-          legend.key.height = unit(2, "cm"),
-          legend.position = "top")
